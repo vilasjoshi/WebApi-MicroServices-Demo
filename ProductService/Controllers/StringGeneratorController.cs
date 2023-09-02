@@ -28,7 +28,13 @@ namespace ProductService.Controllers
 
             var uniqueStrings = await GenerateUniqueStringsAsync(count);
             var result = new ApiResult(uniqueStrings.ToList());
-            return Ok(result);
+            // save strings to database;
+
+            HttpClientHelper httpClientHelper = new HttpClientHelper();
+            var databaseApi = "https://localhost:7134/api/database/insert";
+            var dataResponse = await httpClientHelper.PostAsync<string[], string>(databaseApi, uniqueStrings.ToArray());
+
+            return Ok(dataResponse);
         }
 
         private async Task<ConcurrentBag<string>> GenerateUniqueStringsAsync(int count)
